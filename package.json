@@ -1,17 +1,19 @@
 {
-    "name": "astro-theme-panda",
+    "name": "intergalactic-ice",
     "type": "module",
     "version": "0.1.0",
     "scripts": {
         "dev": "astro dev",
         "start": "astro dev",
-        "build": "astro build",
+        "build": "astro check && astro build",
         "preview": "astro preview",
         "astro": "astro"
     },
     "dependencies": {
+        "@astrojs/check": "^0.9.3",
         "@astrojs/mdx": "latest",
         "@astrojs/partytown": "latest",
+        "@astrojs/react": "^3.6.2",
         "@astrojs/rss": "latest",
         "@astrojs/sitemap": "latest",
         "@astrojs/ts-plugin": "latest",
@@ -23,7 +25,9 @@
         "luxon": "latest",
         "markdown-it": "latest",
         "purgecss": "latest",
-        "remark-pangu": "latest"
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "sanitize-html": "^2.13.0"
     },
     "devDependencies": {
         "@expressive-code/core": "latest",
@@ -32,14 +36,18 @@
         "@types/luxon": "latest",
         "@types/markdown-it": "latest",
         "@types/node": "^20.12.2",
+        "@types/react": "^18.3.8",
+        "@types/react-dom": "^18.3.0",
+        "@unocss/preset-web-fonts": "^0.62.4",
         "debug": "latest",
         "hastscript": "latest",
         "jsonc-parser": "latest",
-        "prettier": "latest",
-        "prettier-plugin-astro": "latest",
+        "prettier": "^3.3.3",
+        "prettier-plugin-astro": "^0.14.1",
         "remark-directive": "latest",
         "shikiji": "latest",
         "slash": "latest",
+        "typescript": "^5.6.2",
         "unist-util-visit": "latest",
         "unocss": "latest"
     }

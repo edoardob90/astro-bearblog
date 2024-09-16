@@ -1,18 +1,18 @@
-import {defineConfig} from 'astro/config'
+// @ts-check
+import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 import yaml from '@rollup/plugin-yaml'
 import mdx from '@astrojs/mdx'
 import partytown from '@astrojs/partytown'
-import {remarkModifiedTime} from './src/plugins/remark-modified-time.mjs'
-import remarkPanGu from 'remark-pangu'
+import { remarkModifiedTime } from './src/plugins/remark-modified-time.mjs'
 import UnoCSS from 'unocss/astro'
 import expressiveCode from 'astro-expressive-code'
-import {ExpressiveCodeTheme} from '@expressive-code/core'
-import {readFileSync} from 'fs'
-import {parse} from 'jsonc-parser'
-import remarkDirective from "remark-directive";
-import {RDNotePlugin, RDBilibiliPlugin} from "./src/plugins/remark-directive.mjs";
-import {PandaConfig} from "./src/config.js";
+import { ExpressiveCodeTheme } from '@expressive-code/core'
+import { readFileSync } from 'fs'
+import { parse } from 'jsonc-parser'
+import remarkDirective from 'remark-directive'
+import { RDNotePlugin, RDBilibiliPlugin } from './src/plugins/remark-directive.mjs'
+import { PandaConfig } from './src/config.js'
 
 const nightOwlDark = new ExpressiveCodeTheme(
     parse(readFileSync('./src/styles/expressive-code/night-owl-dark.jsonc', 'utf-8'))
@@ -21,14 +21,11 @@ const nightOwlLight = new ExpressiveCodeTheme(
     parse(readFileSync('./src/styles/expressive-code/night-owl-light.jsonc', 'utf-8'))
 )
 
-
-
-
-const {site, defaultLocale} = PandaConfig
+const { site, defaultLocale } = PandaConfig
 // https://astro.build/config
 export default defineConfig({
     vite: {
-        plugins: [yaml()],
+        plugins: [yaml()]
     },
     prefetch: true,
     site,
@@ -39,7 +36,7 @@ export default defineConfig({
     },
     markdown: {
         syntaxHighlight: false,
-        remarkPlugins: [remarkDirective, RDNotePlugin, RDBilibiliPlugin, remarkModifiedTime, remarkPanGu],
+        remarkPlugins: [remarkDirective, RDNotePlugin, RDBilibiliPlugin, remarkModifiedTime],
         remarkRehype: {
             footnoteLabel: ' '
         }
@@ -56,5 +53,5 @@ export default defineConfig({
         mdx(),
         partytown()
     ],
-    output: 'static',
+    output: 'static'
 })
