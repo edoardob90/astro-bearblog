@@ -92,13 +92,13 @@ const read_in = t({
     </style>
     <div class="mt-6">
         <h1 class="text-4xl">{post.data.title}</h1>
-        <div class="flex flex-row rounded-lg bg-stone-100 dark:bg-stone-600 p-2 px-4">
+        <div class="flex flex-row rounded-lg bg-stone-100 dark:bg-[var(--color-secondary-bg)] p-2 px-4">
             <span class="ml-2 mr-auto font-normal text-sm">
                 {
                     post.data.langs
                         .filter((lang) => lang !== locale)
                         .map((lang) => (
-                            <a href={`/blog/${lang}/${post.slug.slice(3)}`} class="text-sm mr-2 panda-link">
+                            <a href={`/blog/${lang}/${post.slug.split('/')[1]}`} class="text-sm mr-2 panda-link">
                                 {`${read_in} ${LOCALES[lang].label}`}
                             </a>
                         ))

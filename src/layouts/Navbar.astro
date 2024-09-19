@@ -1,35 +1,81 @@
 ---
-import { useTranslations, type Lang } from '@/utils/i18n'
-import { PandaConfig } from '../config.js'
+import { useTranslations, type Lang, LOCALES } from '@/utils/i18n'
+import { PandaConfig } from '@/consts'
 
+export interface Props {
+    showLangFilter?: boolean
+}
+
+const { showLangFilter = true } = Astro.props
 const url = Astro.url
 const locale = Astro.currentLocale as Lang
 const t = useTranslations(locale)
 const { navbar } = PandaConfig
 
-const items = navbar
-const isRootPage = () => !items.some((item) => url.toString().includes(item.url))
+const langFilter = t({
+    en: 'Language filter: ',
+    it: 'Filtro lingua: '
+})
+
+const isRootPage = () => !navbar.some((item) => url.toString().includes(item.url))
+
+function getRelativeLocaleUrl(lang: string, currentPath: string): string {
+    // Split the current path into segments by '/'
+    const parts: string[] = currentPath.split('/').filter(Boolean) // Removes empty segments
+
+    // Check if the first segment is a locale (assumed to be two characters long)
+    if (parts[0] && parts[0].length === 2) {
+        // Replace the first segment with the new locale
+        parts[0] = lang
+    } else {
+        // No locale present, prepend the new locale
+        parts.unshift(lang)
+    }
+    return `/${parts.join('/')}`
+}
+
+// console.log(Astro.url)
 ---
 
-<nav class={url.toString().includes('/posts/') ? 'hidden' : ''}>
-    <a
-        rel="prefetch"
-        href="/"
-        class="panda-link mr-4 animated hover:no-underline"
-        class:list={isRootPage() ? 'active' : ''}>{t('posts')}</a
-    >
+<nav class={url.toString().includes('/blog/') ? 'hidden' : ''}>
+    <div>
+        <a
+            rel="prefetch"
+            href="/"
+            class="panda-link mr-4 animated hover:no-underline"
+            class:list={isRootPage() ? 'active' : ''}>{t('posts')}</a
+        >
+        {
+            navbar.map((item) => {
+                return (
+                    <a
+                        rel="prefetch"
+                        href={item.isLocalized ? getRelativeLocaleUrl(locale, item.url) : item.url}
+                        class="panda-link mr-4 animated hover:no-underline"
+                        class:list={url.toString().includes(item.url) ? 'active' : ''}
+                    >
+                        {item.title}
+                    </a>
+                )
+            })
+        }
+    </div>
     {
-        items.map((item) => {
-            return (
-                <a
-                    rel="prefetch"
-                    href={item.url}
-                    class="panda-link mr-4 animated hover:no-underline"
-                    class:list={url.toString().includes(item.url) ? 'active' : ''}
-                >
-                    {item.title}
-                </a>
-            )
-        })
+        showLangFilter && (
+            <div class="my-4 text-sm">
+                {Object.keys(LOCALES).map((lang) => {
+                    return (
+                        <a
+                            rel="prefetch"
+                            href={getRelativeLocaleUrl(lang, Astro.url.pathname)}
+                            class="panda-link mr-2 animated hover:no-underline"
+                            class:list={locale === lang ? 'active' : ''}
+                        >
+                            {LOCALES[lang].label}
+                        </a>
+                    )
+                })}
+            </div>
+        )
     }
 </nav>

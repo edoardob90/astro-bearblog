@@ -4,20 +4,27 @@ import groupBy from 'lodash/groupBy'
 import keys from 'lodash/keys'
 import { slugifySpace, formatDateMD } from '@/utils/format'
 import { getCollection } from 'astro:content'
-import { useTranslations, type Lang, DEFAULT_LOCALE, LOCALES } from '@/utils/i18n'
-import { getRelativeLocaleUrl } from 'astro:i18n'
+import { useTranslations, type Lang, DEFAULT_LOCALE } from '@/utils/i18n'
 
-const { tag } = Astro.props
+export interface Props {
+    lang?: string
+}
+
 const locale = Astro.currentLocale as Lang
 const t = useTranslations(locale)
 
 const allPosts = await getCollection('blog', ({ data }) => {
-    return import.meta.env.PROD ? data.isDraft !== true : true
+    return data.title && (import.meta.env.PROD ? data.isDraft !== true : true)
 })
 
 const filteredPosts = allPosts
-    .filter((post) => (post.data.langs.includes(DEFAULT_LOCALE) ? post.slug.includes(DEFAULT_LOCALE) : true))
-    .filter((post) => (tag ? post.data.tags.includes(tag) : true)) // filter by tag (if passed in props)
+    .filter((post) => {
+        if (locale !== undefined) {
+            return post.data.langs.includes(locale) && post.slug.startsWith(locale)
+        } else {
+            return post.slug.startsWith(DEFAULT_LOCALE)
+        }
+    })
     .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()) // sort by date
 
 const tags = [...new Set(filteredPosts.flatMap((post) => post.data.tags))]
@@ -40,19 +47,15 @@ const result = keys(postsByYear)
                 return (
                     <div>
                         <div class="font-inter text-2xl font-bold italic my-3">{year.year}</div>
-                        <ul class="px-2">
+                        <ul>
                             {year.posts.map((post) => {
                                 return (
-                                    <li class="font-inter font-light my-1 flex transition-all duration-300">
-                                        <span class="text-[0.9em]" style={{ flex: '0 0 5rem' }}>
+                                    <li>
+                                        <span style={{ flex: '0 0 5rem' }}>
                                             <time class="mr-2">{formatDateMD(post.data.pubDate.toISOString())}</time>
                                         </span>
 
-                                        <a
-                                            rel="prefetch-intent"
-                                            href={getRelativeLocaleUrl(locale, post.slug, { prependWith: 'blog' })}
-                                            class="panda-link-static"
-                                        >
+                                        <a rel="prefetch-intent" href={`/blog/${post.slug}`} class="panda-link-static">
                                             {post.data.title}
                                         </a>
                                     </li>
@@ -77,3 +80,15 @@ const result = keys(postsByYear)
         </div>
     </main>
 </Layout>
+
+<style>
+    ul {
+        @apply list-none flex flex-wrap flex-col px-2;
+    }
+    ul li {
+        @apply inline-block font-inter font-light my-1 transition-all duration-300;
+    }
+    li span {
+        @apply text-[0.9em];
+    }
+</style>

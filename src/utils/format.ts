@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { PandaConfig } from '../config.js'
+import { PandaConfig } from '@/consts'
 const { defaultLocale } = PandaConfig
 
 export function relativeTo(dateStr: string, locale: string = defaultLocale) {

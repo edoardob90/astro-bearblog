@@ -1,0 +1,12 @@
+---
+import { LOCALES } from '@/utils/i18n'
+import TagsLayout from '@/layouts/TagsLayout.astro'
+
+export const prerender = true
+export const getStaticPaths = () =>
+    Object.keys(LOCALES).map((locale) => ({
+        params: { locale: locale, tags: 'tags' }
+    }))
+---
+
+<TagsLayout />

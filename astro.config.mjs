@@ -12,7 +12,7 @@ import { readFileSync } from 'fs'
 import { parse } from 'jsonc-parser'
 import remarkDirective from 'remark-directive'
 import { RDNotePlugin, RDBilibiliPlugin } from './src/plugins/remark-directive.mjs'
-import { PandaConfig } from './src/config.js'
+import react from '@astrojs/react'
 
 const nightOwlDark = new ExpressiveCodeTheme(
     parse(readFileSync('./src/styles/expressive-code/night-owl-dark.jsonc', 'utf-8'))
@@ -21,15 +21,13 @@ const nightOwlLight = new ExpressiveCodeTheme(
     parse(readFileSync('./src/styles/expressive-code/night-owl-light.jsonc', 'utf-8'))
 )
 
-const { site, defaultLocale } = PandaConfig
-
 // https://astro.build/config
 export default defineConfig({
     vite: {
         plugins: [yaml()]
     },
     prefetch: true,
-    site,
+    site: 'https://blog.edoardob.im/',
     scopedStyleStrategy: 'class',
     trailingSlash: 'ignore',
     build: {
@@ -52,7 +50,8 @@ export default defineConfig({
             }
         }),
         mdx(),
-        partytown()
+        partytown(),
+        react()
     ],
     output: 'static',
     i18n: {

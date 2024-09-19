@@ -1,0 +1,9 @@
+---
+import { localeParams } from '@/utils/i18n'
+import BlogListLayout from '@/layouts/BlogListLayout.astro'
+
+export const prerender = true
+export const getStaticPaths = () => localeParams
+---
+
+<BlogListLayout />

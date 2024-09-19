@@ -21,7 +21,7 @@ export default defineConfig({
             cssExtend: {
                 a: {
                     // no underline
-                    textDecoration: 'none',
+                    'text-decoration': 'none',
                     'font-size': '.9em',
                     // add underline offset
                     textDecorationThickness: '0.1em',
@@ -29,7 +29,7 @@ export default defineConfig({
                 },
                 // li word-break reference: issue #3
                 li: {
-                    'word-break': 'break-all'
+                    'word-break': 'normal'
                 },
                 'li code': {
                     'white-space': 'pre-wrap',
@@ -62,7 +62,7 @@ export default defineConfig({
                 },
                 // blockquote word-break reference: issue #3
                 'blockquote p': {
-                    'word-break': 'break-all'
+                    'word-break': 'normal'
                 },
                 'blockquote code': {
                     'white-space': 'pre-wrap',

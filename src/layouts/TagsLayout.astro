@@ -2,8 +2,7 @@
 import Layout from '@/layouts/Layout.astro'
 import { type CollectionEntry, getCollection } from 'astro:content'
 import { formatDateMD, formatDateYMD, slugifySpace } from '@/utils/format'
-import { useTranslations, type Lang } from '@/utils/i18n'
-import { getRelativeLocaleUrl } from 'astro:i18n'
+import { useTranslations, type Lang, DEFAULT_LOCALE } from '@/utils/i18n'
 
 const locale = Astro.currentLocale as Lang
 const t = useTranslations(locale)
@@ -16,10 +15,18 @@ type PostsWithTag = {
 const taggedPosts: PostsWithTag[] = []
 
 const allPosts = await getCollection('blog', ({ data }) => {
-    return import.meta.env.PROD ? data.isDraft !== true : true
+    return data.title && (import.meta.env.PROD ? data.isDraft !== true : true)
 })
 
-const filteredPosts = allPosts.filter((post) => post.data.tags && post.slug.includes(locale))
+const filteredPosts = allPosts
+    .filter((post) => post.data.tags)
+    .filter((post) => {
+        if (locale !== undefined) {
+            return post.data.langs.includes(locale) && post.slug.startsWith(locale)
+        } else {
+            return post.slug.startsWith(DEFAULT_LOCALE)
+        }
+    })
 
 const uniqueTags = [...new Set(filteredPosts.flatMap((post) => post.data.tags))]
 
@@ -33,6 +40,9 @@ uniqueTags.forEach((tag) => {
         posts: postsWithTag
     })
 })
+
+// Sort tags by the how many posts they have
+taggedPosts.sort((a, b) => b.posts.length - a.posts.length)
 ---
 
 <Layout title="tags">
@@ -63,11 +73,7 @@ uniqueTags.forEach((tag) => {
                                     <span style={{ flex: '0 0 5rem' }}>
                                         <time>{formatDateYMD(post.data.pubDate.toISOString())}</time>
                                     </span>
-                                    <a
-                                        rel="prefetch-intent"
-                                        href={getRelativeLocaleUrl(locale, post.slug, { prependWith: 'blog' })}
-                                        class="panda-link-static"
-                                    >
+                                    <a rel="prefetch-intent" href={`/blog/${post.slug}`} class="panda-link-static">
                                         {post.data.title}
                                     </a>
                                 </li>
@@ -85,10 +91,13 @@ uniqueTags.forEach((tag) => {
         @apply text-xl mt-8 mb-2 text-[color:rgb(var(--color-text-heading))];
     }
     ul {
-        @apply list-none flex flex-wrap;
+        @apply list-none flex flex-wrap flex-col;
     }
     ul li {
         @apply inline-block font-inter font-light my-1 transition-all duration-300;
+    }
+    li span {
+        @apply text-[0.9em];
     }
     time {
         @apply mr-2;

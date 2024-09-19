@@ -1,3 +1,40 @@
+:root {
+    /* blue */
+    /* --color-primary-main: 37 99 235; */
+    /* --color-secondary-main: 24 79 196; */
+
+    /*green*/
+    --color-primary-main: 29 116 132;
+    --color-secondary-main: 20 79 90;
+    --color-text-body: 55 65 81;
+    --color-text-heading: 55 65 81;
+    --color-text-link: var(--color-primary-main);
+    --color-text-link-hover: var(--color-secondary-main);
+    --color-border: var(--color-primary-main);
+    --color-primary-bg: white;
+    --color-secondary-bg: #fafafa;
+    --color-code-bg: #f3f4f6;
+
+    scroll-behavior: smooth;
+}
+
+:root.dark {
+    color-scheme: dark;
+
+    --color-primary-main: 242 148 41; /* 235 153 161; /* #eb99a1 */
+    --color-secondary-main: 191 138 38; /* 226 111 122; /* #e26f7a */
+    --color-text-body: 212 212 212; /* 214 211 209; */
+    --color-text-heading: 146 147 146; /* 255 255 255; */
+    --color-text-link: var(--color-primary-main);
+    --color-text-link-hover: var(--color-secondary-main);
+    --color-border: var(--color-primary-main);
+    --color-primary-bg: black;
+    --color-secondary-bg: #302d2d;
+    --color-code-bg: #302d2d; /*  #1a202c */
+
+    scroll-behavior: smooth;
+}
+
 body {
     @apply font-sans text-[1.15em];
     overflow-y: scroll;
@@ -13,7 +50,7 @@ h6 {
 }
 
 img {
-    @apply max-w-md mx-h-[20%];
+    @apply max-w-md mx-h-[20%] border-rd-[5px];
 }
 
 time,
@@ -90,39 +127,6 @@ a.animated.active:after {
     hover:underline-offset-4;
 }
 
-:root {
-    /* blue */
-    /*--color-primary-main: 37 99 235;*/
-    /*--color-secondary-main: 24 79 196;*/
-
-    /*green*/
-    --color-primary-main: 29 116 132;
-    --color-secondary-main: 20 79 90;
-
-    --color-text-body: 55 65 81;
-    --color-text-heading: 55 65 81;
-    --color-text-link: var(--color-primary-main);
-    --color-text-link-hover: var(--color-secondary-main);
-    --color-border: var(--color-primary-main);
-    --color-code-bg: #f3f4f6;
-
-    scroll-behavior: smooth;
-}
-
-:root.dark {
-    color-scheme: dark;
-    --color-primary-main: 235 153 161; /* #eb99a1 */
-    --color-secondary-main: 226 111 122; /* #e26f7a */
-    --color-text-body: 214 211 209;
-    --color-text-heading: 255 255 255;
-    --color-text-link: var(--color-primary-main);
-    --color-text-link-hover: var(--color-secondary-main);
-    --color-border: var(--color-primary-main);
-    --color-code-bg: #1a202c;
-
-    scroll-behavior: smooth;
-}
-
 /*
  * prose link
  */
@@ -156,6 +160,20 @@ a.animated.active:after {
 * footnotes
 */
 
+section.footnotes {
+    margin: 3em 0;
+}
+
+section.footnotes::before {
+    content: '• • •';
+    display: block;
+    text-align: center;
+}
+
+section.footnotes #footnote-label {
+    display: none;
+}
+
 [data-footnote-ref]::before {
     content: ' [';
 }
@@ -171,6 +189,22 @@ a.animated.active:after {
 [data-footnote-ref] {
     @apply font-normal no-underline;
 }
+
+/* figure and captions */
+figure {
+    @apply m-0;
+}
+
+figcaption {
+    @apply font-inter
+        mt-1 mb-6
+        py-[5px] px-[12px]
+        text-center
+        border-rd-[5px]
+        bg-stone-100 dark:bg-[var(--color-secondary-bg)];
+}
+
+/* transitions */
 
 .transition-all {
     transition-property: all;
