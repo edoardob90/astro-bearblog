@@ -1,0 +1,29 @@
+---
+import BlogPostLayout from '@/layouts/BlogPostLayout.astro'
+import { getCollection } from 'astro:content'
+import { DEFAULT_LOCALE, LOCALES } from '@/utils/i18n'
+
+export async function getStaticPaths() {
+    // Fetch all posts that are not drafts (except when developing locally)
+    const allPosts = await getCollection('blog', ({ data }) => {
+        return import.meta.env.PROD ? data.isDraft !== true : true
+    })
+
+    return allPosts.map((post) => {
+        const [locale, ...slugParts] = post.slug.split('/')
+        const postSlug = slugParts.join('/')
+
+        return {
+            params: { locale: locale, slug: postSlug },
+            props: { post }
+        }
+    })
+}
+
+const { post } = Astro.props
+const { Content } = await post.render()
+---
+
+<BlogPostLayout post={post}>
+    <Content />
+</BlogPostLayout>

@@ -9,7 +9,7 @@ export const prerender = true
 const parser = new MarkdownIt()
 
 export async function GET({ params }) {
-    const blog = await getCollection('posts')
+    const blog = await getCollection('blog')
     const posts = blog
         .filter((i) => i.data.title && !i.data.draft)
         .map((post) => {

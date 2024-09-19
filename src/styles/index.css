@@ -1,6 +1,15 @@
 body {
-    font-family: Verdana, sans-serif;
+    @apply font-sans text-[1.15em];
     overflow-y: scroll;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply font-inter;
 }
 
 img {
@@ -26,7 +35,7 @@ div {
 }
 
 .panda-link {
-    @apply hover:cursor-pointer no-underline animated ;
+    @apply hover:cursor-pointer no-underline animated;
     color: rgb(var(--color-text-link));
 }
 
@@ -95,8 +104,7 @@ a.animated.active:after {
     --color-text-link: var(--color-primary-main);
     --color-text-link-hover: var(--color-secondary-main);
     --color-border: var(--color-primary-main);
-    --color-code-bg : #f3f4f6;
-
+    --color-code-bg: #f3f4f6;
 
     scroll-behavior: smooth;
 }
@@ -110,7 +118,7 @@ a.animated.active:after {
     --color-text-link: var(--color-primary-main);
     --color-text-link-hover: var(--color-secondary-main);
     --color-border: var(--color-primary-main);
-    --color-code-bg : #1a202c;
+    --color-code-bg: #1a202c;
 
     scroll-behavior: smooth;
 }
@@ -166,11 +174,10 @@ a.animated.active:after {
 
 .transition-all {
     transition-property: all;
-    transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-    transition-duration: .15s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.15s;
 }
 
 .duration-300 {
-    transition-duration: .3s;
+    transition-duration: 0.3s;
 }
-

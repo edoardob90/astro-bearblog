@@ -1,85 +1,75 @@
 ---
-import Layout from '../layouts/Layout.astro'
+import Layout from '@/layouts/Layout.astro'
 import groupBy from 'lodash/groupBy'
 import keys from 'lodash/keys'
-import { slugifySpace } from '@utils/format'
-import { parseSlug } from '@utils/file'
-import { useLocale } from '@utils/locale'
-import { formatDateMD } from '@utils/format'
-const { path, t, locale } = useLocale(Astro.url)
-let { tag, category } = Astro.props
-const posts = (await Astro.glob('../content/posts/**/*.{md,mdx}')).map((i) => {
-    i.frontmatter['url'] =  parseSlug(i.file) + '/'
-    return i.frontmatter
-})
-const filteredPosts = posts
-    .filter((frontmatter) => {
-        if (tag) {
-            return !frontmatter.draft && frontmatter.tags && frontmatter.tags.includes(tag)
-        } else if (category) {
-            return !frontmatter.draft && frontmatter.categories && frontmatter.categories.includes(category)
-        }
-        return !frontmatter.draft
-    })
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+import { slugifySpace, formatDateMD } from '@/utils/format'
+import { getCollection } from 'astro:content'
+import { useTranslations, type Lang, DEFAULT_LOCALE, LOCALES } from '@/utils/i18n'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
-const tags = new Set(
-    filteredPosts
-        .filter((i) => i.tags)
-        .map((i) => i.tags)
-        .flat()
-)
-const postsByYear = groupBy(filteredPosts, (frontmatter) => new Date(frontmatter.pubDate).getFullYear())
+const { tag } = Astro.props
+const locale = Astro.currentLocale as Lang
+const t = useTranslations(locale)
+
+const allPosts = await getCollection('blog', ({ data }) => {
+    return import.meta.env.PROD ? data.isDraft !== true : true
+})
+
+const filteredPosts = allPosts
+    .filter((post) => (post.data.langs.includes(DEFAULT_LOCALE) ? post.slug.includes(DEFAULT_LOCALE) : true))
+    .filter((post) => (tag ? post.data.tags.includes(tag) : true)) // filter by tag (if passed in props)
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()) // sort by date
+
+const tags = [...new Set(filteredPosts.flatMap((post) => post.data.tags))]
+
+const postsByYear = groupBy(filteredPosts, (post) => post.data.pubDate.getFullYear())
+
 const result = keys(postsByYear)
     .map((key) => ({
-        year: key,
-        list: postsByYear[key].sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+        year: Number(key),
+        posts: postsByYear[key].sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
     }))
-    .filter((i: any) => !isNaN(i.year))
+    .filter((item) => !isNaN(item.year))
     .reverse()
-function getTitle(post) {
-    if (!locale || locale === 'zh') return post.title
-    const enTitle = post['title-en']
-    if (!enTitle) return post.title
-    return enTitle
-}
 ---
 
-<Layout title={t('nav.posts')}>
-    <main  class="mt-8">
+<Layout title="posts">
+    <main class="mt-8">
         {
-            result.map((yearItem) => {
+            result.map((year) => {
                 return (
-                    <>
-                        <div class="text-2xl font-bold italic my-3">{yearItem.year}</div>
+                    <div>
+                        <div class="font-inter text-2xl font-bold italic my-3">{year.year}</div>
                         <ul class="px-2">
-                            {yearItem.list.map((post: any) => {
+                            {year.posts.map((post) => {
                                 return (
-                                    <li class="my-1 flex  transition-all duration-300">
-                                        <span style={{ flex: '0 0 5rem' }}>
-                                            <time class="mr-2">{formatDateMD(post.pubDate)}</time>
+                                    <li class="font-inter font-light my-1 flex transition-all duration-300">
+                                        <span class="text-[0.9em]" style={{ flex: '0 0 5rem' }}>
+                                            <time class="mr-2">{formatDateMD(post.data.pubDate.toISOString())}</time>
                                         </span>
-                                        <a rel="prefetch-intent"  href={path(post.url)}  class="panda-link-static">
-                                            {getTitle(post)}
+
+                                        <a
+                                            rel="prefetch-intent"
+                                            href={getRelativeLocaleUrl(locale, post.slug, { prependWith: 'blog' })}
+                                            class="panda-link-static"
+                                        >
+                                            {post.data.title}
                                         </a>
                                     </li>
                                 )
                             })}
                         </ul>
-                    </>
+                    </div>
                 )
             })
         }
 
         <div class="mt-6">
             {
-                [...tags].map((tag) => {
+                tags.map((tag) => {
                     return (
-                        <a
-                            class="mr-1 text-sm panda-link my-1 hover:font-bold"
-                            href={'/tags/' + slugifySpace(tag) + '/'}
-                        >
-                            #{t('tags.' + tag)}
+                        <a class="mr-1 text-sm panda-link my-1 hover:font-bold" href={'/tags#' + slugifySpace(tag)}>
+                            #{t(tag)}
                         </a>
                     )
                 })

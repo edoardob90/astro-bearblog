@@ -1,11 +1,18 @@
 ---
-import Layout from '@layouts/Layout.astro'
-import { useLocale } from '@utils/locale'
-const { t } = useLocale(Astro.url)
+import Layout from '@/layouts/Layout.astro'
+import { localeParams, useTranslations, type Lang } from '@/utils/i18n'
+const t = useTranslations(Astro.currentLocale as Lang)
+
+const title = t({
+    it: 'Pagina non trovata',
+    en: 'Page Not Found'
+})
+
 export const prerender = true
+export const getStaticPaths = () => localeParams
 ---
 
-<Layout title={t('message.404-content')}>
+<Layout title={title}>
     <h1>404</h1>
-    <p>{t('message.404-content')}</p>
+    <p>Page not found.</p>
 </Layout>

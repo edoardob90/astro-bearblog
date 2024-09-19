@@ -1,32 +1,38 @@
 ---
-import {useLocale} from '@utils/locale'
-import {PandaConfig} from "../config.js";
-const {start, footer} = PandaConfig;
-const {t, path} = useLocale(Astro.url)
+import { PandaConfig } from '@/config.js'
+const { start, footer } = PandaConfig
+import { useTranslations, type Lang } from '@/utils/i18n'
+
+const locale = Astro.currentLocale as Lang
+const t = useTranslations(locale)
+
+// Translations
+const buildWith = t({ en: 'built with', it: 'costruito con' })
+const inspiredBy = t({ en: 'inspired by', it: 'ispirato da' })
 ---
 
 <footer class="mt-12 mb-6 text-sm">
-
     <div class="mb-1">
-        {footer &&
-            footer.map((item, index) => (
+        {
+            footer &&
+                footer.map((item, index) => (
                     <span>
-
-              <a href={item.url} class="panda-link">{item.title}</a>
+                        <a href={item.url} class="panda-link">
+                            {item.title}
+                        </a>
                         {index !== footer.length - 1 && <span class="mx-1">|</span>}
                     </span>
-
-            ))
+                ))
         }
     </div>
     <div class="mb-1">
         <span>{start}-{new Date().getFullYear()}</span>
     </div>
     <div class="text-sm">
-        {t('footer.built-with')}
-        <a class="panda-link italic" href="https://astro.build/">astro</a>, {t('footer.inspired-by')}<a
+        {buildWith}
+        <a class="panda-link italic" href="https://astro.build/">Astro</a>, {inspiredBy}<a
             class="panda-link italic ml-1"
-            href="https://bearblog.dev/">bearblog</a
-    >.
+            href="https://bearblog.dev/">Bearblog</a
+        >.
     </div>
 </footer>

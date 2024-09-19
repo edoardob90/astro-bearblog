@@ -11,15 +11,3 @@ declare module 'remark-pangu' {
     const pangu: any
     export default pangu
 }
-
-
-
-export interface PostFrontMatter {
-    title: string
-    title_en: string
-    date: string
-    tags: string[]
-    categories: string[]
-    lastModified: string
-    draft: boolean
-}

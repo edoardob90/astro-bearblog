@@ -1,4 +1,4 @@
-import zh from '../locales/zh.yml'
+import zh from '../locales/it.yml'
 import en from '../locales/en.yml'
 import get from 'lodash/get'
 import { PandaConfig } from '../config.js'

@@ -1,0 +1,23 @@
+nav:
+    posts: articoli
+    recent: recenti
+footer:
+    home: home
+    rss: rss
+    timeline: cronologia
+    collection: collezione
+    drafts: bozze
+    contact: contatti
+    built-with: Creato con
+    inspired-by: Ispirato da
+post:
+    back: Indietro
+    post_at: Pubblicato il
+    last_modified_at: Ultima modifica il
+message:
+    404-content: Pagina non trovata
+    back-later: Lavoro non ancora terminato, per favore torna più tardi
+    loading: Caricamento in corso...
+pagination:
+    previous: Precedente
+    next: Successivo

@@ -1,19 +1,38 @@
 ---
-import Layout from './Layout.astro'
-import {useLocale} from '@utils/locale'
-import {formatDateYMD} from "@utils/format";
-import {PostFrontMatter} from "../type";
+import Layout from '@/layouts/Layout.astro'
+import type { CollectionEntry } from 'astro:content'
+import { formatDateYMD } from '@/utils/format'
+import { LOCALES, useTranslations, type Lang } from '@/utils/i18n'
 
 interface Props {
-    FrontMatter: PostFrontMatter;
+    post: CollectionEntry<'blog'>
 }
-const {FrontMatter} = Astro.props
-const {path, t, locale} = useLocale(Astro.url)
-const title = locale === 'en' && FrontMatter['title-en'] ? FrontMatter['title-en'] : FrontMatter['title']
+
+const { post } = Astro.props
+const locale = Astro.currentLocale as Lang
+const t = useTranslations(locale)
+
+// Translations
+const back = t({
+    it: 'indietro',
+    en: 'back'
+})
+const post_at = t({
+    it: 'pubblicato il',
+    en: 'posted at'
+})
+const last_modified_at = t({
+    it: 'ultima modifica il',
+    en: 'last modified at'
+})
+const read_in = t({
+    en: 'leggi in',
+    it: 'read in'
+})
 ---
 
-<Layout title={title} navbar={false}>
-    <a rel="prefetch" class="panda-link mt-6" href={path('/')}>{t('post.back')}</a>
+<Layout title={post.data.title} navbar={false}>
+    <a rel="prefetch" class="panda-link mt-6" href="/">{back}</a>
     <style is:inline>
         /* notification */
         .notification p {
@@ -70,36 +89,36 @@ const title = locale === 'en' && FrontMatter['title-en'] ? FrontMatter['title-en
             border-color: #bee5eb;
             color: #d1ecf1;
         }
-
     </style>
     <div class="mt-6">
-        <h1 class="text-4xl">{title}</h1>
-        <div class="flex sm:flex-row flex-col rounded-lg bg-stone-100 dark:bg-stone-600 p-2 px-4">
-            <div>
+        <h1 class="text-4xl">{post.data.title}</h1>
+        <div class="flex flex-row rounded-lg bg-stone-100 dark:bg-stone-600 p-2 px-4">
+            <span class="ml-2 mr-auto font-normal text-sm">
                 {
-                    FrontMatter.categories &&
-                    FrontMatter.categories.map((category) => (
-                            <span class="ml-2">
-                                <a href={path('/categories/' + category)} class="text-sm mr-2 panda-link">
-                                    #{t('categories.' + category)}#
-                                </a>
-                            </span>
-                    ))
+                    post.data.langs
+                        .filter((lang) => lang !== locale)
+                        .map((lang) => (
+                            <a href={`/blog/${lang}/${post.slug.slice(3)}`} class="text-sm mr-2 panda-link">
+                                {`${read_in} ${LOCALES[lang].label}`}
+                            </a>
+                        ))
                 }
-            </div>
-            <span class="ml-auto mr-4 text-sm font-normal"> {t('post.post_at')} {formatDateYMD(FrontMatter.pubDate)}</span>
+            </span>
+            <span class="ml-auto mr-2 text-sm font-normal">
+                {post_at} {formatDateYMD(post.data.pubDate.toISOString(), locale)}</span
+            >
         </div>
     </div>
     <article class="prose dark:prose-invert prose-stone max-w-prose mt-6">
-        <slot/>
+        <slot />
     </article>
     {
-        FrontMatter.pubDate !== FrontMatter.lastModified && (
-                    <div class="mt-9 flex text-sm font-italic opacity-80">
+        post.data.lastModified && post.data.pubDate !== post.data.lastModified && (
+            <div class="mt-9 flex text-sm font-italic opacity-80">
                 <span class="ml-auto">
-                    {t('post.last_modified_at')} {formatDateYMD(FrontMatter.lastModified)}
+                    {last_modified_at} {formatDateYMD(post.data.lastModified.toISOString(), locale)}
                 </span>
-                    </div>
+            </div>
         )
     }
 </Layout>

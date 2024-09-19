@@ -1,4 +1,5 @@
 // uno.config.ts
+import presetWebFonts from '@unocss/preset-web-fonts'
 import { defineConfig, presetMini, presetTypography, transformerDirectives } from 'unocss'
 
 export default defineConfig({
@@ -9,9 +10,16 @@ export default defineConfig({
     transformers: [transformerDirectives()],
     presets: [
         presetMini(),
+        presetWebFonts({
+            provider: 'bunny',
+            fonts: {
+                sans: 'Atkinson Hyperlegible',
+                inter: 'Inter'
+            }
+        }),
         presetTypography({
             cssExtend: {
-                'a': {
+                a: {
                     // no underline
                     textDecoration: 'none',
                     'font-size': '.9em',
@@ -20,23 +28,23 @@ export default defineConfig({
                     textDecorationColor: 'rgb(var(--color-text-link))'
                 },
                 // li word-break reference: issue #3
-                'li':{
-                    'word-break': 'break-all',
+                li: {
+                    'word-break': 'break-all'
                 },
                 'li code': {
                     'white-space': 'pre-wrap',
                     'word-break': 'break-word',
-                    'margin': '0.2rem',
-                    'padding': '0.15em 0.3em',
+                    margin: '0.2rem',
+                    padding: '0.15em 0.3em',
                     'border-radius': '0.2em',
                     'background-color': 'var(--color-code-bg)'
-                }, 
+                },
                 'li code::after': {
                     content: 'none'
                 },
                 'li code::before': {
                     content: 'none'
-                },  
+                },
                 'a:hover': {
                     color: 'rgb(var(--color-text-link-hover))'
                 },
@@ -54,13 +62,13 @@ export default defineConfig({
                 },
                 // blockquote word-break reference: issue #3
                 'blockquote p': {
-                    'word-break': 'break-all',
+                    'word-break': 'break-all'
                 },
                 'blockquote code': {
                     'white-space': 'pre-wrap',
                     'word-break': 'break-word',
-                    'margin': '0.2rem',
-                    'padding': '0.15em 0.3em',
+                    margin: '0.2rem',
+                    padding: '0.15em 0.3em',
                     'border-radius': '0.2em',
                     'background-color': 'var(--color-code-bg)'
                 }

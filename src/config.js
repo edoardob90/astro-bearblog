@@ -5,8 +5,8 @@ export const PandaConfig = {
     site: 'https://astro-theme-panda.vercel.app/',
     defaultLocale: 'en',
     navbar: [
-        // {title: 'Posts', url: '/'}, // auto generated
-        { title: 'about', url: '/about/' }
+        { title: 'about', url: '/about' },
+        { title: 'tags', url: '/tags' }
     ],
     footer: [
         { title: 'rss', url: '/rss.xml/' },

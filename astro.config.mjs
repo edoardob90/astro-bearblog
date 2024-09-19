@@ -22,6 +22,7 @@ const nightOwlLight = new ExpressiveCodeTheme(
 )
 
 const { site, defaultLocale } = PandaConfig
+
 // https://astro.build/config
 export default defineConfig({
     vite: {
@@ -30,7 +31,7 @@ export default defineConfig({
     prefetch: true,
     site,
     scopedStyleStrategy: 'class',
-    trailingSlash: 'always',
+    trailingSlash: 'ignore',
     build: {
         format: 'directory'
     },
@@ -53,5 +54,12 @@ export default defineConfig({
         mdx(),
         partytown()
     ],
-    output: 'static'
+    output: 'static',
+    i18n: {
+        defaultLocale: 'en',
+        locales: ['en', 'it'],
+        routing: {
+            prefixDefaultLocale: false
+        }
+    }
 })
