@@ -27,7 +27,7 @@ export default defineConfig({
         plugins: [yaml()]
     },
     prefetch: true,
-    site: 'https://blog.edoardob.im/',
+    site: 'https://blogedoardobim.vercel.app/',
     scopedStyleStrategy: 'class',
     trailingSlash: 'ignore',
     build: {
