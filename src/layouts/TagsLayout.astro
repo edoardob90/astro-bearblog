@@ -1,8 +1,9 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import { type CollectionEntry, getCollection } from 'astro:content'
-import { formatDateMD, formatDateYMD, slugifySpace } from '@/utils/format'
+import { formatDateYMD, slugifySpace } from '@/utils/format'
 import { useTranslations, type Lang, DEFAULT_LOCALE } from '@/utils/i18n'
+import getUniqueTags from '@/utils/getUniqueTags'
 
 const locale = Astro.currentLocale as Lang
 const t = useTranslations(locale)
@@ -28,7 +29,7 @@ const filteredPosts = allPosts
         }
     })
 
-const uniqueTags = [...new Set(filteredPosts.flatMap((post) => post.data.tags))]
+const uniqueTags = getUniqueTags(filteredPosts)
 
 // Group posts by tag
 uniqueTags.forEach((tag) => {
@@ -53,7 +54,7 @@ taggedPosts.sort((a, b) => b.posts.length - a.posts.length)
                     return (
                         <a
                             class="mr-1 text-base font-inter panda-link my-1 hover:font-bold"
-                            href={'/tags#' + slugifySpace(tag)}
+                            href={`/${locale}/blog/tags#${slugifySpace(tag)}`}
                         >
                             #{t(tag)}
                         </a>
@@ -68,12 +69,13 @@ taggedPosts.sort((a, b) => b.posts.length - a.posts.length)
                     <h3 id={tag.name}>#{tag.name}</h3>
                     <ul>
                         {tag.posts.map((post) => {
+                            const [_, ...slug] = post.slug.split('/')
                             return (
                                 <li>
                                     <span style={{ flex: '0 0 5rem' }}>
                                         <time>{formatDateYMD(post.data.pubDate.toISOString())}</time>
                                     </span>
-                                    <a rel="prefetch-intent" href={`/blog/${post.slug}`} class="panda-link-static">
+                                    <a rel="prefetch-intent" href={`/${locale}/blog/${slug}`} class="panda-link-static">
                                         {post.data.title}
                                     </a>
                                 </li>

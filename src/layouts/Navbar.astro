@@ -31,13 +31,16 @@ function getRelativeLocaleUrl(lang: string, currentPath: string): string {
         // No locale present, prepend the new locale
         parts.unshift(lang)
     }
-    return `/${parts.join('/')}`
+    return `/${parts.join('/')}/`
 }
 
-// console.log(Astro.url)
+const hideNavbar =
+    url.pathname.includes('/blog/') && !url.pathname.includes('/blog/tags') && !url.pathname.match(/\/blog\/[^\/]+\/?$/)
+
+// console.log(url.pathname, hideNavbar)
 ---
 
-<nav class={url.toString().includes('/blog/') ? 'hidden' : ''}>
+<nav class={hideNavbar ? 'hidden' : ''}>
     <div>
         <a
             rel="prefetch"

@@ -98,7 +98,7 @@ const read_in = t({
                     post.data.langs
                         .filter((lang) => lang !== locale)
                         .map((lang) => (
-                            <a href={`/blog/${lang}/${post.slug.split('/')[1]}`} class="text-sm mr-2 panda-link">
+                            <a href={`/${lang}/blog/${post.slug.split('/')[1]}`} class="text-sm mr-2 panda-link">
                                 {`${read_in} ${LOCALES[lang].label}`}
                             </a>
                         ))

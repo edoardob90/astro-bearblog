@@ -40,7 +40,7 @@ export const PandaConfig: PandaConfigType = {
     site: 'https://blogedoardobim.vercel.app/',
     defaultLocale: DEFAULT_LOCALE_SETTING,
     navbar: [
-        { title: 'tags', url: '/tags', isLocalized: true },
+        { title: 'tags', url: '/blog/tags', isLocalized: true },
         { title: 'me', url: '/me', isLocalized: false },
         { title: 'contact', url: '/contact', isLocalized: false }
     ],

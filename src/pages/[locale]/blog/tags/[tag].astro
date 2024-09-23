@@ -1,0 +1,26 @@
+---
+import { LOCALES } from '@/utils/i18n'
+import BlogListLayout from '@/layouts/BlogListLayout.astro'
+import { getCollection } from 'astro:content'
+import getUniqueTags from '@/utils/getUniqueTags'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('blog', ({ data }) => {
+        return import.meta.env.PROD ? data.isDraft !== true : true
+    })
+
+    const tags = getUniqueTags(allPosts)
+
+    return Object.keys(LOCALES).flatMap((locale) => {
+        return tags.map((tag) => ({
+            params: { locale: locale, tag: tag }
+        }))
+    })
+}
+
+const { tag } = Astro.params
+---
+
+<BlogListLayout tag={tag} />
