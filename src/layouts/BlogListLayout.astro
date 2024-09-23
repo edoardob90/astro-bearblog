@@ -63,7 +63,7 @@ const result = keys(postsByYear)
                                             rel="prefetch-intent"
                                             href={`/${locale}/blog/${slug}`}
                                             class="panda-link-static"
-                                            class:list={post.data.isDraft ? 'bg-yellow-200' : ''}
+                                            class:list={post.data.isDraft ? 'bg-yellow-300 dark:bg-yellow-200' : ''}
                                         >
                                             {post.data.title}
                                         </a>
