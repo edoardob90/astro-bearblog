@@ -27,7 +27,7 @@ export default defineConfig({
         plugins: [yaml()]
     },
     prefetch: true,
-    site: 'https://blogedoardobim.vercel.app/',
+    site: 'https://blogedoardobim.netlify.app/',
     scopedStyleStrategy: 'class',
     trailingSlash: 'ignore',
     build: {
