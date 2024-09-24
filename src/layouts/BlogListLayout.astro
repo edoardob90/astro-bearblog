@@ -3,13 +3,15 @@ import Layout from '@/layouts/Layout.astro'
 import groupBy from 'lodash/groupBy'
 import keys from 'lodash/keys'
 import { slugifySpace, formatDateMD } from '@/utils/format'
+import getUniqueTags from '@/utils/getUniqueTags'
 import { getCollection } from 'astro:content'
 import { useTranslations, type Lang, DEFAULT_LOCALE } from '@/utils/i18n'
 
 export interface Props {
-    lang?: string
+    tag?: string
 }
 
+const { tag } = Astro.props as Props
 const locale = Astro.currentLocale as Lang
 const t = useTranslations(locale)
 
@@ -25,9 +27,10 @@ const filteredPosts = allPosts
             return post.slug.startsWith(DEFAULT_LOCALE)
         }
     })
+    .filter((post) => (tag ? post.data.tags.includes(tag) : true))
     .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()) // sort by date
 
-const tags = [...new Set(filteredPosts.flatMap((post) => post.data.tags))]
+const uniqueTags = getUniqueTags(filteredPosts)
 
 const postsByYear = groupBy(filteredPosts, (post) => post.data.pubDate.getFullYear())
 
@@ -49,13 +52,19 @@ const result = keys(postsByYear)
                         <div class="font-inter text-2xl font-bold italic my-3">{year.year}</div>
                         <ul>
                             {year.posts.map((post) => {
+                                const [_, ...slug] = post.slug.split('/')
                                 return (
                                     <li>
                                         <span style={{ flex: '0 0 5rem' }}>
                                             <time class="mr-2">{formatDateMD(post.data.pubDate.toISOString())}</time>
                                         </span>
 
-                                        <a rel="prefetch-intent" href={`/blog/${post.slug}`} class="panda-link-static">
+                                        <a
+                                            rel="prefetch-intent"
+                                            href={`/${locale}/blog/${slug}`}
+                                            class="panda-link-static"
+                                            class:list={post.data.isDraft ? 'bg-yellow-300 dark:bg-yellow-200' : ''}
+                                        >
                                             {post.data.title}
                                         </a>
                                     </li>
@@ -69,9 +78,12 @@ const result = keys(postsByYear)
 
         <div class="mt-6">
             {
-                tags.map((tag) => {
+                uniqueTags.map((tag) => {
                     return (
-                        <a class="mr-1 text-sm panda-link my-1 hover:font-bold" href={'/tags#' + slugifySpace(tag)}>
+                        <a
+                            class="mr-1 text-sm panda-link my-1 hover:font-bold"
+                            href={`/${locale}/blog/${slugifySpace(tag)}`}
+                        >
                             #{t(tag)}
                         </a>
                     )

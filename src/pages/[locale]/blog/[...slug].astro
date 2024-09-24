@@ -1,7 +1,11 @@
 ---
 import BlogPostLayout from '@/layouts/BlogPostLayout.astro'
-import { getCollection } from 'astro:content'
-import { DEFAULT_LOCALE, LOCALES } from '@/utils/i18n'
+import { getCollection, type CollectionEntry } from 'astro:content'
+import getSortedPosts from '@/utils/getSortedPosts'
+
+export interface Props {
+    post: CollectionEntry<'blog'>
+}
 
 export async function getStaticPaths() {
     // Fetch all posts that are not drafts (except when developing locally)
@@ -11,6 +15,7 @@ export async function getStaticPaths() {
 
     return allPosts.map((post) => {
         const [locale, ...slugParts] = post.slug.split('/')
+        // console.log(locale, slugParts)
         const postSlug = slugParts.join('/')
 
         return {
@@ -22,8 +27,13 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props
 const { Content } = await post.render()
+
+const posts = await getCollection('blog', ({ data }) => {
+    return import.meta.env.PROD ? data.isDraft !== true : true
+})
+const sortedPosts = getSortedPosts(posts, 'asc')
 ---
 
-<BlogPostLayout post={post}>
+<BlogPostLayout post={post} posts={sortedPosts}>
     <Content />
 </BlogPostLayout>

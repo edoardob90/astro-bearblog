@@ -6,11 +6,26 @@ import { LOCALES, useTranslations, type Lang } from '@/utils/i18n'
 
 interface Props {
     post: CollectionEntry<'blog'>
+    posts: CollectionEntry<'blog'>[]
 }
 
-const { post } = Astro.props
+const { post, posts } = Astro.props
 const locale = Astro.currentLocale as Lang
 const t = useTranslations(locale)
+
+// Next/Prev posts index calculation
+const allPosts = posts.map(({ data: { title }, slug }) => {
+    const [_, ...slugParts] = slug.split('/')
+    return {
+        title,
+        slug: slugParts.join('/')
+    }
+})
+
+const currentPostIndex = allPosts.findIndex((p) => post.slug.includes(p.slug))
+
+const prevPost = currentPostIndex !== 0 ? allPosts[currentPostIndex - 1] : null
+const nextPost = currentPostIndex !== allPosts.length ? allPosts[currentPostIndex + 1] : null
 
 // Translations
 const back = t({
@@ -28,6 +43,14 @@ const last_modified_at = t({
 const read_in = t({
     en: 'leggi in',
     it: 'read in'
+})
+const prev_post = t({
+    en: 'previous post',
+    it: 'post precedente'
+})
+const next_post = t({
+    en: 'next post',
+    it: 'post successivo'
 })
 ---
 
@@ -98,7 +121,7 @@ const read_in = t({
                     post.data.langs
                         .filter((lang) => lang !== locale)
                         .map((lang) => (
-                            <a href={`/blog/${lang}/${post.slug.split('/')[1]}`} class="text-sm mr-2 panda-link">
+                            <a href={`/${lang}/blog/${post.slug.split('/')[1]}`} class="text-sm mr-2 panda-link">
                                 {`${read_in} ${LOCALES[lang].label}`}
                             </a>
                         ))
@@ -121,4 +144,79 @@ const read_in = t({
             </div>
         )
     }
+
+    <!-- Prev/Next posts navigation -->
+    <div class="prev-next-posts">
+        {
+            prevPost && (
+                <a href={`/${locale}/blog/${prevPost.slug}`} class="panda-link flex w-full gap-1">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left flex-none"
+                    >
+                        <>
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M15 6l-6 6l6 6" />
+                        </>
+                    </svg>
+                    <div>
+                        <span>{prev_post}</span>
+                        <div class="prev-post-title">{prevPost.title}</div>
+                    </div>
+                </a>
+            )
+        }
+        {
+            nextPost && (
+                <a
+                    href={`/${locale}/blog/${nextPost.slug}`}
+                    class="panda-link flex w-full gap-1 justify-end text-right"
+                >
+                    <div>
+                        <span>{next_post}</span>
+                        <div class="next-post-title">{nextPost.title}</div>
+                    </div>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right flex-none"
+                    >
+                        <>
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M9 6l6 6l-6 6" />
+                        </>
+                    </svg>
+                </a>
+            )
+        }
+    </div>
 </Layout>
+
+<style>
+    div.prev-next-posts {
+        @apply grid grid-cols-1 gap-6 sm:grid-cols-2
+        bg-stone-100 dark:bg-[var(--color-secondary-bg)]
+        p-2 px-4
+        rounded-lg
+        my-12;
+    }
+    div.prev-post-title,
+    div.next-post-title {
+        @apply text-sm font-inter mt-2;
+    }
+</style>

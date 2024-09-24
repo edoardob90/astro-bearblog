@@ -27,7 +27,10 @@ export default defineConfig({
         plugins: [yaml()]
     },
     prefetch: true,
-    site: 'https://blogedoardobim.netlify.app/',
+    site:
+        process.env.CONTEXT === 'production'
+            ? 'https://blogedoardobim.netlify.app/'
+            : process.env.DEPLOY_PRIME_URL || 'http://localhost',
     scopedStyleStrategy: 'class',
     trailingSlash: 'ignore',
     build: {
