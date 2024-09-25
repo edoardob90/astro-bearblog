@@ -1,5 +1,7 @@
 # My personal website/blog `edoardob.blog`
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/90a71f9d-d0b1-458c-a202-73928b6b40b0/deploy-status)](https://app.netlify.com/sites/blogedoardobim/deploys)
+
 Built with [Astro](https://astro.build).
 
 ### Configure production and preview deployments
